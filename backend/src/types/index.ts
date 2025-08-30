@@ -98,12 +98,14 @@ export interface IPromoCode extends Document {
   _id: string;
   code: string;
   caseId: string;
-  status: 'active' | 'used';
+  status: 'active' | 'used' | 'expired';
   usedBy?: string; // User ID who used the code
   usedAt?: Date;
   createdBy: string; // Admin user ID who created the code
   createdAt: Date;
   expiresAt?: Date;
+  usageAttempts: number; // Track failed usage attempts
+  lastAttemptAt?: Date; // Last usage attempt timestamp
   isValid(): boolean;
 }
 

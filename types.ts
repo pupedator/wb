@@ -120,8 +120,16 @@ export interface UserProfile {
  * Represents a promo code for unlocking cases.
  */
 export interface PromoCode {
+  id?: string;
   code: string;
   caseId: string; // The ID of the case this code unlocks.
-  status: 'active' | 'used';
+  caseName?: string; // Name of the case (populated by backend)
+  status: 'active' | 'used' | 'expired';
   createdAt: string; // ISO date string.
+  expiresAt?: string; // ISO date string.
+  usedBy?: string; // User ID who used the code
+  usedAt?: string; // ISO date string when used
+  createdBy: string; // Admin user ID who created the code
+  usageAttempts?: number; // Number of failed usage attempts
+  lastAttemptAt?: string; // ISO date string of last attempt
 }

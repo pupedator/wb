@@ -1,0 +1,481 @@
+version: '3.8'
+
+# PixelCyberZone Microservices Architecture
+# This Docker Compose file sets up the complete enterprise infrastructure
+
+networks:
+  pixelcyberzone-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+  monitoring-network:
+    driver: bridge
+    
+volumes:
+  mongodb-data:
+  redis-data:
+  nginx-cache:
+  elasticsearch-data:
+  prometheus-data:
+  grafana-data:
+
+services:
+  # ==========================================
+  # DATABASE SERVICES
+  # ==========================================
+  
+  mongodb:
+    image: mongo:7
+    container_name: pixelcyberzone-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_ROOT_PASSWORD:-strongpassword}
+      MONGO_INITDB_DATABASE: pixelcyberzone
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+      - ./scripts/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      - pixelcyberzone-network
+    command: mongod --replSet rs0
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Redis for caching and queues
+  redis:
+    image: redis:7-alpine
+    container_name: pixelcyberzone-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-redispassword}
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - pixelcyberzone-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ==========================================
+  # MICROSERVICES
+  # ==========================================
+
+  # User Service
+  user-service:
+    build:
+      context: ./microservices/user-service
+      dockerfile: Dockerfile
+    container_name: pixelcyberzone-user-service
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      USER_SERVICE_PORT: 3001
+      MONGODB_URI: mongodb://admin:${MONGODB_ROOT_PASSWORD:-strongpassword}@mongodb:27017/pixelcyberzone?authSource=admin
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redispassword}
+      JWT_SECRET: ${JWT_SECRET:-your-jwt-secret}
+      INSTANCE_ID: user-service-1
+    ports:
+      - "3001:3001"
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - pixelcyberzone-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Game Service
+  game-service:
+    build:
+      context: ./microservices/game-service
+      dockerfile: Dockerfile
+    container_name: pixelcyberzone-game-service
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      GAME_SERVICE_PORT: 3002
+      MONGODB_URI: mongodb://admin:${MONGODB_ROOT_PASSWORD:-strongpassword}@mongodb:27017/pixelcyberzone?authSource=admin
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redispassword}
+      INSTANCE_ID: game-service-1
+    ports:
+      - "3002:3002"
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - pixelcyberzone-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Booking Service
+  booking-service:
+    build:
+      context: ./microservices/booking-service
+      dockerfile: Dockerfile
+    container_name: pixelcyberzone-booking-service
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      BOOKING_SERVICE_PORT: 3003
+      MONGODB_URI: mongodb://admin:${MONGODB_ROOT_PASSWORD:-strongpassword}@mongodb:27017/pixelcyberzone?authSource=admin
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redispassword}
+      INSTANCE_ID: booking-service-1
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - pixelcyberzone-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Payment Service
+  payment-service:
+    build:
+      context: ./microservices/payment-service
+      dockerfile: Dockerfile
+    container_name: pixelcyberzone-payment-service
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PAYMENT_SERVICE_PORT: 3004
+      MONGODB_URI: mongodb://admin:${MONGODB_ROOT_PASSWORD:-strongpassword}@mongodb:27017/pixelcyberzone?authSource=admin
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redispassword}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      INSTANCE_ID: payment-service-1
+    ports:
+      - "3004:3004"
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - pixelcyberzone-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3004/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Notification Service
+  notification-service:
+    build:
+      context: ./microservices/notification-service
+      dockerfile: Dockerfile
+    container_name: pixelcyberzone-notification-service
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      NOTIFICATION_SERVICE_PORT: 3005
+      MONGODB_URI: mongodb://admin:${MONGODB_ROOT_PASSWORD:-strongpassword}@mongodb:27017/pixelcyberzone?authSource=admin
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redispassword}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASS: ${SMTP_PASS}
+      INSTANCE_ID: notification-service-1
+    ports:
+      - "3005:3005"
+    depends_on:
+      - mongodb
+      - redis
+    networks:
+      - pixelcyberzone-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3005/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ==========================================
+  # API GATEWAY
+  # ==========================================
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    container_name: pixelcyberzone-api-gateway
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      GATEWAY_PORT: 8080
+      USER_SERVICE_URL: http://user-service:3001
+      GAME_SERVICE_URL: http://game-service:3002
+      BOOKING_SERVICE_URL: http://booking-service:3003
+      PAYMENT_SERVICE_URL: http://payment-service:3004
+      NOTIFICATION_SERVICE_URL: http://notification-service:3005
+      JWT_SECRET: ${JWT_SECRET:-your-jwt-secret}
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redispassword}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - user-service
+      - game-service
+      - booking-service
+      - payment-service
+      - notification-service
+      - redis
+    networks:
+      - pixelcyberzone-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ==========================================
+  # LOAD BALANCER
+  # ==========================================
+
+  nginx:
+    image: nginx:alpine
+    container_name: pixelcyberzone-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/ssl:ro
+      - nginx-cache:/var/cache/nginx
+      - ./dist:/var/www/pixelcyberzone:ro
+    depends_on:
+      - api-gateway
+      - user-service
+      - game-service
+      - booking-service
+    networks:
+      - pixelcyberzone-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ==========================================
+  # MONITORING & LOGGING
+  # ==========================================
+
+  # Elasticsearch for centralized logging
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+    container_name: pixelcyberzone-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - monitoring-network
+      - pixelcyberzone-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200/_cluster/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Logstash for log processing
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.8.0
+    container_name: pixelcyberzone-logstash
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    depends_on:
+      - elasticsearch
+    networks:
+      - monitoring-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9600"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Kibana for log visualization
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.8.0
+    container_name: pixelcyberzone-kibana
+    restart: unless-stopped
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    networks:
+      - monitoring-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601/api/status"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: pixelcyberzone-prometheus
+    restart: unless-stopped
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      - monitoring-network
+      - pixelcyberzone-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Grafana for monitoring dashboards
+  grafana:
+    image: grafana/grafana:latest
+    container_name: pixelcyberzone-grafana
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_USERS_ALLOW_SIGN_UP: false
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - prometheus
+    networks:
+      - monitoring-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Node Exporter for system metrics
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: pixelcyberzone-node-exporter
+    restart: unless-stopped
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100"
+    networks:
+      - monitoring-network
+
+  # ==========================================
+  # ADDITIONAL SERVICES
+  # ==========================================
+
+  # Message Queue Dashboard (Bull Board)
+  queue-dashboard:
+    build:
+      context: ./monitoring/queue-dashboard
+      dockerfile: Dockerfile
+    container_name: pixelcyberzone-queue-dashboard
+    restart: unless-stopped
+    environment:
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redispassword}
+      PORT: 3010
+    ports:
+      - "3010:3010"
+    depends_on:
+      - redis
+    networks:
+      - pixelcyberzone-network
+
+  # Cache warmer service
+  cache-warmer:
+    build:
+      context: ./services/cache-warmer
+      dockerfile: Dockerfile
+    container_name: pixelcyberzone-cache-warmer
+    restart: unless-stopped
+    environment:
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-redispassword}
+      API_GATEWAY_URL: http://api-gateway:8080
+    depends_on:
+      - redis
+      - api-gateway
+    networks:
+      - pixelcyberzone-network
+
+  # Frontend (React App)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: pixelcyberzone-frontend
+    restart: unless-stopped
+    environment:
+      REACT_APP_API_URL: http://localhost:8080/api
+      REACT_APP_WS_URL: ws://localhost:8080
+      REACT_APP_CDN_URL: ${CDN_BASE_URL:-http://localhost/assets}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api-gateway
+    networks:
+      - pixelcyberzone-network
+
+# ==========================================
+# DEVELOPMENT OVERRIDE
+# ==========================================
+
+# To run in development mode:
+# docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+# ==========================================
+# PRODUCTION SCALING
+# ==========================================
+
+# For production scaling, use:
+# docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --scale user-service=3 --scale game-service=2

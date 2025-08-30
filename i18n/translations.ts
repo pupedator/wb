@@ -236,10 +236,10 @@ export const translations: Translations = {
             id: 'admin-001',
             name: "Admin",
             avatar: "https://i.ibb.co/6gBSVf9/logo.png",
-            email: "admin@pixelcyberzone.com",
+            email: "admin@pixel.com",
             role: "admin",
             registrationDate: new Date().toISOString(),
-            password: "admin123456",
+            password: "4g#2kPU£23-Y[%z{",
             status: "active"
         } as UserProfile,
         nav_links: [
@@ -476,10 +476,10 @@ export const translations: Translations = {
             id: 'admin-001',
             name: "Admin",
             avatar: "https://i.ibb.co/6gBSVf9/logo.png",
-            email: "admin@pixelcyberzone.com",
+            email: "admin@pixel.com",
             role: "admin",
             registrationDate: new Date().toISOString(),
-            password: "admin123456",
+            password: "4g#2kPU£23-Y[%z{",
             status: "active"
         } as UserProfile,
         nav_links: [
@@ -693,10 +693,10 @@ export const translations: Translations = {
             id: 'admin-001',
             name: "Админ",
             avatar: "https://i.ibb.co/6gBSVf9/logo.png",
-            email: "admin@pixelcyberzone.com",
+            email: "admin@pixel.com",
             role: "admin",
             registrationDate: new Date().toISOString(),
-            password: "admin123456",
+            password: "4g#2kPU£23-Y[%z{",
             status: "active"
         } as UserProfile,
         nav_links: [

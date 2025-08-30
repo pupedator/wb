@@ -124,6 +124,19 @@ export const openCase = async (req: AuthRequest, res: Response): Promise<void> =
     });
 
     if (!promo) {
+      // Log failed attempt for security monitoring
+      const existingPromo = await PromoCode.findOne({ code: promoCode.toUpperCase() });
+      if (existingPromo) {
+        existingPromo.usageAttempts += 1;
+        existingPromo.lastAttemptAt = new Date();
+        
+        // If too many failed attempts, mark as suspicious
+        if (existingPromo.usageAttempts >= 10) {
+          existingPromo.status = 'expired';
+        }
+        await existingPromo.save();
+      }
+      
       res.status(400).json({ 
         success: false, 
         message: `Invalid or incompatible promo code for ${selectedCase.name} case` 
@@ -132,7 +145,27 @@ export const openCase = async (req: AuthRequest, res: Response): Promise<void> =
     }
 
     if (!promo.isValid()) {
+      // Auto-expire codes that are past expiration
+      if (promo.expiresAt && new Date() > promo.expiresAt) {
+        promo.status = 'expired';
+        await promo.save();
+      }
       res.status(400).json({ success: false, message: 'Promo code has expired' });
+      return;
+    }
+
+    // Check if user has already used a promo code for this case recently (prevent abuse)
+    const recentUsage = await CaseHistory.findOne({
+      userId: user._id.toString(),
+      caseId,
+      createdAt: { $gte: new Date(Date.now() - 60 * 60 * 1000) } // Within last hour
+    });
+
+    if (recentUsage) {
+      res.status(429).json({ 
+        success: false, 
+        message: 'You can only open one case per hour. Please try again later.' 
+      });
       return;
     }
 
@@ -227,26 +260,57 @@ export const generatePromoCode = async (req: AuthRequest, res: Response): Promis
       return;
     }
 
-    // Generate a unique promo code
-    const code = `PCZ${Date.now().toString(36).toUpperCase()}${Math.random().toString(36).substr(2, 4).toUpperCase()}`;
+    // Generate a unique promo code with case prefix for better identification
+    const casePrefix = selectedCase.name.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 4);
+    const timestamp = Date.now().toString(36).toUpperCase();
+    const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const code = `${casePrefix}-${timestamp}-${randomPart}`;
 
-    const promoCode = await PromoCode.create({
-      code,
-      caseId,
-      createdBy: req.user.userId,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
-    });
+    // Check for code uniqueness (very unlikely collision but good practice)
+    const existingCode = await PromoCode.findOne({ code });
+    if (existingCode) {
+      // Generate a new random part if collision occurs
+      const newRandomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+      const newCode = `${casePrefix}-${timestamp}-${newRandomPart}`;
+      
+      const promoCode = await PromoCode.create({
+        code: newCode,
+        caseId,
+        createdBy: req.user.userId,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+      });
 
-    const response: PromoCodeResponse = {
-      success: true,
-      message: 'Promo code generated successfully',
-      code: promoCode.code
-    };
+      const response: PromoCodeResponse = {
+        success: true,
+        message: `Promo code generated successfully for ${selectedCase.name}`,
+        code: promoCode.code
+      };
 
-    res.json(response);
+      res.json(response);
+    } else {
+      const promoCode = await PromoCode.create({
+        code,
+        caseId,
+        createdBy: req.user.userId,
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+      });
+
+      const response: PromoCodeResponse = {
+        success: true,
+        message: `Promo code generated successfully for ${selectedCase.name}`,
+        code: promoCode.code
+      };
+
+      res.json(response);
+    }
   } catch (error) {
     console.error('Generate promo code error:', error);
-    res.status(500).json({ success: false, message: 'Internal server error' });
+    if (error.code === 11000) {
+      // Duplicate key error - try again with different code
+      res.status(409).json({ success: false, message: 'Code generation conflict, please try again' });
+    } else {
+      res.status(500).json({ success: false, message: 'Internal server error' });
+    }
   }
 };
 
@@ -384,11 +448,23 @@ export const validatePromoCode = async (req: Request, res: Response): Promise<vo
     });
 
     if (!promo) {
-      res.status(400).json({ 
-        success: false, 
-        message: `Promo code is not valid for ${selectedCase.name} case`,
-        compatible: false
-      });
+      // Log failed validation attempt
+      const anyPromo = await PromoCode.findOne({ code: promoCode.toUpperCase() });
+      if (anyPromo && anyPromo.caseId !== caseId) {
+        // Code exists but for different case
+        res.status(400).json({ 
+          success: false, 
+          message: `This promo code is for a different case, not ${selectedCase.name}`,
+          compatible: false
+        });
+      } else {
+        // Code doesn't exist at all
+        res.status(400).json({ 
+          success: false, 
+          message: `Promo code is not valid for ${selectedCase.name} case`,
+          compatible: false
+        });
+      }
       return;
     }
 
@@ -420,6 +496,131 @@ export const validatePromoCode = async (req: Request, res: Response): Promise<vo
     });
   } catch (error) {
     console.error('Validate promo code error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+// Admin function to clean up expired promo codes
+export const cleanupExpiredPromoCodes = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.user || req.user.role !== 'admin') {
+      res.status(403).json({ success: false, message: 'Admin access required' });
+      return;
+    }
+
+    // Find and update expired codes
+    const expiredCount = await PromoCode.updateMany(
+      {
+        status: 'active',
+        expiresAt: { $lt: new Date() }
+      },
+      {
+        status: 'expired'
+      }
+    );
+
+    res.json({
+      success: true,
+      message: `${expiredCount.modifiedCount} expired promo codes cleaned up`,
+      cleanedCount: expiredCount.modifiedCount
+    });
+  } catch (error) {
+    console.error('Cleanup expired promo codes error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+// Admin function to manually expire a promo code
+export const expirePromoCode = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.user || req.user.role !== 'admin') {
+      res.status(403).json({ success: false, message: 'Admin access required' });
+      return;
+    }
+
+    const { promoId } = req.params;
+
+    if (!promoId) {
+      res.status(400).json({ success: false, message: 'Promo code ID is required' });
+      return;
+    }
+
+    const promo = await PromoCode.findById(promoId);
+    if (!promo) {
+      res.status(404).json({ success: false, message: 'Promo code not found' });
+      return;
+    }
+
+    if (promo.status === 'used') {
+      res.status(400).json({ success: false, message: 'Cannot expire a promo code that has already been used' });
+      return;
+    }
+
+    promo.status = 'expired';
+    await promo.save();
+
+    res.json({
+      success: true,
+      message: 'Promo code expired successfully',
+      code: promo.code
+    });
+  } catch (error) {
+    console.error('Expire promo code error:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
+// Admin function to get promo code statistics
+export const getPromoCodeStats = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    if (!req.user || req.user.role !== 'admin') {
+      res.status(403).json({ success: false, message: 'Admin access required' });
+      return;
+    }
+
+    const totalCodes = await PromoCode.countDocuments();
+    const activeCodes = await PromoCode.countDocuments({ status: 'active' });
+    const usedCodes = await PromoCode.countDocuments({ status: 'used' });
+    const expiredCodes = await PromoCode.countDocuments({ status: 'expired' });
+    
+    // Stats by case
+    const caseStats = await Promise.all(
+      CASES.map(async (caseItem) => {
+        const caseTotal = await PromoCode.countDocuments({ caseId: caseItem.id });
+        const caseActive = await PromoCode.countDocuments({ caseId: caseItem.id, status: 'active' });
+        const caseUsed = await PromoCode.countDocuments({ caseId: caseItem.id, status: 'used' });
+        const caseExpired = await PromoCode.countDocuments({ caseId: caseItem.id, status: 'expired' });
+        
+        return {
+          caseId: caseItem.id,
+          caseName: caseItem.name,
+          total: caseTotal,
+          active: caseActive,
+          used: caseUsed,
+          expired: caseExpired
+        };
+      })
+    );
+
+    // Recent usage stats
+    const last24Hours = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const recentUsage = await PromoCode.countDocuments({ 
+      usedAt: { $gte: last24Hours }
+    });
+
+    res.json({
+      success: true,
+      stats: {
+        total: totalCodes,
+        active: activeCodes,
+        used: usedCodes,
+        expired: expiredCodes,
+        recentUsage,
+        caseBreakdown: caseStats
+      }
+    });
+  } catch (error) {
+    console.error('Get promo code stats error:', error);
     res.status(500).json({ success: false, message: 'Internal server error' });
   }
 };

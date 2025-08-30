@@ -424,6 +424,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 return { success: false, message: 'Authentication required' };
             }
             
+            console.log('Generating promo code for case:', caseId);
+            
             const response = await fetch('/api/promo-codes/generate', {
                 method: 'POST',
                 headers: {
@@ -433,16 +435,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 body: JSON.stringify({ caseId })
             });
             
-            const data = await response.json();
+            console.log('Response status:', response.status);
             
-            if (response.ok && data.success) {
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error('API Error Response:', errorText);
+                
+                try {
+                    const errorData = JSON.parse(errorText);
+                    return { success: false, message: errorData.message || `Server error (${response.status})` };
+                } catch {
+                    return { success: false, message: `Server error (${response.status}): ${errorText}` };
+                }
+            }
+            
+            const data = await response.json();
+            console.log('Success response:', data);
+            
+            if (data.success) {
                 return { success: true, code: data.code, message: data.message };
             } else {
                 return { success: false, message: data.message || 'Failed to generate promo code' };
             }
         } catch (error) {
-            console.error('Failed to generate promo code:', error);
-            return { success: false, message: 'Network error occurred' };
+            console.error('Network error generating promo code:', error);
+            return { success: false, message: `Network error: ${error.message}` };
         }
     };
     
