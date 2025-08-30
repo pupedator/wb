@@ -270,13 +270,14 @@ export const generatePromoCode = async (req: AuthRequest, res: Response): Promis
     }
 
     // Generate a unique promo code with case prefix for better identification
+    // Had to debug this regex for a while - special chars were breaking the codes
     const casePrefix = selectedCase.name.toUpperCase().replace(/[^A-Z0-9]/g, '').substring(0, 4);
     const timestamp = Date.now().toString(36).toUpperCase();
     const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase();
-    const code = `${casePrefix}-${timestamp}-${randomPart}`;
+    const generatedCode = `${casePrefix}-${timestamp}-${randomPart}`;
 
     // Check for code uniqueness (very unlikely collision but good practice)
-    const existingCode = await PromoCode.findOne({ code });
+    const existingCode = await PromoCode.findOne({ code: generatedCode });
     if (existingCode) {
       // Generate a new random part if collision occurs
       const newRandomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -298,7 +299,7 @@ export const generatePromoCode = async (req: AuthRequest, res: Response): Promis
       res.json(response);
     } else {
       const promoCode = await PromoCode.create({
-        code,
+        code: generatedCode,
         caseId,
         createdBy: req.user.userId,
         expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
