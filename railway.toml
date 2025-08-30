@@ -2,9 +2,4 @@
 builder = "nixpacks"
 
 [deploy]
-startCommand = "npm run start:railway"
-restartPolicyType = "on-failure"
-restartPolicyMaxRetries = 10
-
-[env]
-NODE_ENV = "production"
+startCommand = "npm start"

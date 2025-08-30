@@ -2,8 +2,8 @@ import React, { createContext, useState, useContext, useEffect, useMemo } from '
 import type { UserProfile, PromoCode } from '../types.ts';
 import { translations } from '../i18n/translations.ts';
 
-// Add a global type declaration for the `emailjs` object,
-// which is loaded from a script tag in index.html.
+// This is for EmailJS integration - we load it from their CDN in index.html
+// Kinda old school but it works and saves bundle size
 declare const emailjs: any;
 
 

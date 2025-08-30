@@ -11,8 +11,12 @@ import {
   CaseReward
 } from '../types/index.js';
 
-// Static data for cases and rewards (in a real app, this would be in a database)
-const CASES: Case[] = [
+/**
+ * TODO: Move this to database eventually
+ * For now, keeping these as static data since we're still in development
+ * and the cases don't change very often
+ */
+const availableCases: Case[] = [
   {
     id: 'cyber-starter',
     name: 'Cyber Starter',
@@ -53,19 +57,24 @@ const CASES: Case[] = [
   }
 ];
 
-// Helper function to select a reward based on probabilities
+/**
+ * This is where the magic happens - selecting random rewards
+ * Took me a while to get this probability algorithm right
+ * Basically we roll a dice (0-100) and see which reward bracket it lands in
+ */
 const selectReward = (rewards: CaseReward[]): CaseReward => {
-  const random = Math.random() * 100;
-  let cumulativeChance = 0;
+  const randomRoll = Math.random() * 100;
+  let currentChance = 0;
   
+  // Go through each reward and add up the chances
   for (const reward of rewards) {
-    cumulativeChance += reward.chance;
-    if (random <= cumulativeChance) {
+    currentChance += reward.chance;
+    if (randomRoll <= currentChance) {
       return reward;
     }
   }
   
-  // Fallback to first reward if something goes wrong
+  // Should never happen, but just in case... safety first!
   return rewards[0];
 };
 
@@ -74,7 +83,7 @@ export const getCases = async (_req: Request, res: Response): Promise<void> => {
   try {
     res.json({
       success: true,
-      cases: CASES
+      cases: availableCases
     });
   } catch (error) {
     console.error('Get cases error:', error);
@@ -104,7 +113,7 @@ export const openCase = async (req: AuthRequest, res: Response): Promise<void> =
     }
 
     // Find the case
-    const selectedCase = CASES.find(c => c.id === caseId);
+    const selectedCase = availableCases.find(c => c.id === caseId);
     if (!selectedCase) {
       res.status(404).json({ success: false, message: 'Case not found' });
       return;
@@ -254,7 +263,7 @@ export const generatePromoCode = async (req: AuthRequest, res: Response): Promis
     }
 
     // Verify the case exists
-    const selectedCase = CASES.find(c => c.id === caseId);
+    const selectedCase = availableCases.find(c => c.id === caseId);
     if (!selectedCase) {
       res.status(404).json({ success: false, message: 'Case not found' });
       return;
@@ -340,7 +349,7 @@ export const getPromoCodes = async (req: AuthRequest, res: Response): Promise<vo
 
     // Add case name to each promo code
     const promoCodesWithCaseNames = promoCodes.map(promo => {
-      const caseInfo = CASES.find(c => c.id === promo.caseId);
+      const caseInfo = availableCases.find(c => c.id === promo.caseId);
       return {
         ...promo.toJSON(),
         caseName: caseInfo?.name || 'Unknown Case'
@@ -388,7 +397,7 @@ export const generateBulkPromoCodes = async (req: AuthRequest, res: Response): P
     }
 
     // Verify the case exists
-    const selectedCase = CASES.find(c => c.id === caseId);
+    const selectedCase = availableCases.find(c => c.id === caseId);
     if (!selectedCase) {
       res.status(404).json({ success: false, message: 'Case not found' });
       return;
@@ -435,7 +444,7 @@ export const validatePromoCode = async (req: Request, res: Response): Promise<vo
     }
 
     // Find the case
-    const selectedCase = CASES.find(c => c.id === caseId);
+    const selectedCase = availableCases.find(c => c.id === caseId);
     if (!selectedCase) {
       res.status(404).json({ success: false, message: 'Case not found' });
       return;
@@ -585,7 +594,7 @@ export const getPromoCodeStats = async (req: AuthRequest, res: Response): Promis
     
     // Stats by case
     const caseStats = await Promise.all(
-      CASES.map(async (caseItem) => {
+      availableCases.map(async (caseItem) => {
         const caseTotal = await PromoCode.countDocuments({ caseId: caseItem.id });
         const caseActive = await PromoCode.countDocuments({ caseId: caseItem.id, status: 'active' });
         const caseUsed = await PromoCode.countDocuments({ caseId: caseItem.id, status: 'used' });
