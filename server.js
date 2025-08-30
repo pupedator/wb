@@ -7,7 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const port = process.env.PORT || 3005;
+// Railway provides PORT environment variable, fallback to 3000 for local dev
+const port = process.env.PORT || 3000;
 
 /**
  * Serve static files from dist directory first (for production builds)
