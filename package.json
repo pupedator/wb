@@ -7,7 +7,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node server.js",
+    "start:railway": "npm run build && node server.js"
   },
   "dependencies": {
     "react": "^18.2.0",
