@@ -48,7 +48,7 @@ const CaseCard: React.FC<{ caseData: Case, onOpen: () => void }> = ({ caseData, 
     
     return (
         <>
-            <div className={`bg-neutral-900/50 border border-neutral-800 rounded-xl p-4 sm:p-6 flex flex-col items-center text-center transition-all duration-300 hover:border-purple-500 hover:shadow-2xl hover:shadow-purple-600/20 transform hover:-translate-y-2 ${isAnimating ? 'animate-brief-press' : ''}`}>
+            <div className="bg-neutral-900/50 border border-neutral-800 rounded-xl p-4 sm:p-6 flex flex-col items-center text-center transition-all duration-300 hover:border-purple-500 hover:shadow-2xl hover:shadow-purple-600/20 transform hover:-translate-y-2">
                 <img src={caseData.image} alt={caseData.name} className="w-32 sm:w-40 md:w-48 h-32 sm:h-40 md:h-48 object-contain mb-3 sm:mb-4 drop-shadow-[0_5px_15px_rgba(147,51,234,0.2)]" />
                 <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-2">{caseData.name}</h3>
                 <p className="text-base sm:text-lg font-semibold text-purple-400 mb-4 sm:mb-6">{caseData.price}</p>

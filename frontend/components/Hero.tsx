@@ -40,22 +40,12 @@ const Hero: React.FC = () => {
       {/* Dark overlay for better text contrast */}
       <div className="absolute inset-0 bg-black/70"></div>
       
-      {/* Animated particles effect */}
-      <div className="absolute inset-0 opacity-40">
-        <div className="absolute top-20 left-10 w-3 h-3 bg-violet-400 rounded-full animate-pulse shimmer-particle"></div>
-        <div className="absolute top-32 right-20 w-2 h-2 bg-blue-500 rounded-full animate-ping shimmer-particle delay-300"></div>
-        <div className="absolute bottom-40 left-20 w-2.5 h-2.5 bg-purple-400 rounded-full animate-pulse delay-500 shimmer-particle"></div>
-        <div className="absolute bottom-60 right-32 w-2 h-2 bg-indigo-400 rounded-full animate-ping delay-700 shimmer-particle"></div>
-        <div className="absolute top-1/2 left-1/4 w-1.5 h-1.5 bg-violet-300 rounded-full animate-pulse delay-1000 shimmer-particle"></div>
-        <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-blue-300 rounded-full animate-ping delay-1200 shimmer-particle"></div>
-      </div>
-
       <div className="container mx-auto px-4 sm:px-6 py-12 sm:py-20 z-10 relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center min-h-[70vh] sm:min-h-[80vh]">
           {/* Left Content */}
           <div className="lg:col-span-7 space-y-4 sm:space-y-6 lg:space-y-8">
-            {/* Modern Badge */}
-            <div className="inline-flex items-center space-x-2 bg-violet-900/20 backdrop-blur-sm border border-violet-400/30 rounded-full px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium shimmer-badge">
+            {/* Badge */}
+            <div className="inline-flex items-center space-x-2 bg-violet-900/20 backdrop-blur-sm border border-violet-400/30 rounded-full px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-medium">
               <div className="w-2 sm:w-3 h-2 sm:h-3 bg-violet-400 rounded-full animate-pulse"></div>
               <span className="text-violet-200 font-semibold tracking-wide">PREMIUM GAMING EXPERIENCE</span>
             </div>
@@ -128,7 +118,7 @@ const Hero: React.FC = () => {
               {/* Image A (Top-Left) - Larger curved blob */}
               <div className="absolute top-1 sm:top-2 left-0 w-48 sm:w-64 md:w-72 lg:w-80 h-40 sm:h-52 md:h-60 lg:h-72 z-10">
                 <div 
-                  className="w-full h-full relative overflow-hidden group shimmer-image"
+                  className="w-full h-full relative overflow-hidden group"
                   style={{
                     clipPath: 'polygon(20% 0%, 80% 10%, 100% 50%, 85% 90%, 30% 100%, 0% 60%)'
                   }}
@@ -149,7 +139,7 @@ const Hero: React.FC = () => {
               {/* Image B (Center-Right) - Taller S-curved foreground image */}
               <div className="absolute top-0 right-0 w-44 sm:w-56 md:w-64 lg:w-72 h-[200px] sm:h-[280px] md:h-[350px] lg:h-[420px] z-30">
                 <div 
-                  className="w-full h-full relative overflow-hidden group shimmer-image"
+                  className="w-full h-full relative overflow-hidden group"
                   style={{
                     clipPath: 'polygon(30% 0%, 100% 15%, 85% 40%, 95% 65%, 70% 85%, 100% 100%, 0% 90%, 15% 60%, 5% 35%, 25% 10%)'
                   }}
@@ -171,7 +161,7 @@ const Hero: React.FC = () => {
               {/* Image C (Bottom-Left) - Bigger rounded blob */}
               <div className="absolute bottom-3 sm:bottom-6 left-8 sm:left-14 w-40 sm:w-52 md:w-58 lg:w-64 h-36 sm:h-44 md:h-50 lg:h-56 z-20">
                 <div 
-                  className="w-full h-full relative overflow-hidden group shimmer-image"
+                  className="w-full h-full relative overflow-hidden group"
                   style={{
                     clipPath: 'polygon(25% 0%, 75% 5%, 100% 35%, 90% 70%, 60% 100%, 15% 85%, 0% 50%)'
                   }}
@@ -192,69 +182,11 @@ const Hero: React.FC = () => {
                 </div>
               </div>
               
-              {/* Decorative Graphic Element - Bottom-Right Corner */}
-              <div className="absolute bottom-0 right-0 w-20 sm:w-24 lg:w-32 h-20 sm:h-24 lg:h-32 z-10">
-                <div
-                  className="w-full h-full bg-white/5 backdrop-blur-sm border border-white/20"
-                  style={{
-                    clipPath: 'polygon(50% 0%, 100% 0%, 100% 100%, 0% 100%)'
-                  }}
-                >
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-10 sm:w-12 lg:w-16 h-10 sm:h-12 lg:h-16 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 flex items-center justify-center">
-                      <svg className="w-5 sm:w-6 lg:w-8 h-5 sm:h-6 lg:h-8 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              
-              {/* Floating decorative elements */}
-              <div className="absolute top-16 right-20 w-3 h-3 bg-cyan-400/60 rounded-full animate-ping"></div>
-              <div className="absolute bottom-20 left-8 w-2 h-2 bg-purple-400/60 rounded-full animate-pulse delay-500"></div>
-              <div className="absolute top-32 left-16 w-1.5 h-1.5 bg-blue-400/60 rounded-full animate-ping delay-1000"></div>
             </div>
           </div>
         </div>
       </div>
       
-      {/* Advanced Violet-Blue Shimmer Effects CSS */}
-      <style dangerouslySetInnerHTML={{__html: `
-        @keyframes float {
-          0%, 100% { transform: translateY(0px) rotate(0deg); }
-          50% { transform: translateY(-10px) rotate(3deg); }
-        }
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-
-        /* Particle float */
-        @keyframes particleFloat {
-          0%, 100% { transform: translateY(0px) scale(1); opacity: 0.8; }
-          50% { transform: translateY(-20px) scale(1.2); opacity: 1; }
-        }
-        .shimmer-particle {
-          animation: particleFloat 3s ease-in-out infinite;
-        }
-
-        /* Images */
-        .shimmer-image {
-          border: 2px solid transparent;
-          transition: border-color 0.3s ease;
-        }
-        .shimmer-image:hover {
-          border-color: rgba(139, 92, 246, 0.4);
-        }
-
-        @media (max-width: 768px) {
-          .shimmer-button {
-            padding: 1rem 2rem;
-            font-size: 1rem;
-          }
-        }
-      `}} />
     </section>
   );
 };

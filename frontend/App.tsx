@@ -157,10 +157,6 @@ const App: React.FC = () => {
   return (
     // Main wrapper div for the entire application.
     <div className="text-neutral-200 font-sans antialiased relative overflow-x-hidden">
-      {/* Decorative background gradient and blur elements */}
-       <div className="absolute top-0 right-[-20%] w-96 h-96 bg-purple-600/10 rounded-full blur-3xl -z-10"></div>
-      <div className="absolute top-[20%] left-[-10%] w-96 h-96 bg-purple-600/10 rounded-full blur-3xl -z-10"></div>
-      
       {/* The Header is always visible, outside the main page rendering logic. */}
       <Header setPage={setPage} page={page} />
       

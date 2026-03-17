@@ -29,16 +29,6 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onLinkClick, handleNavC
 
   return (
     <div className={`fixed inset-0 bg-black/95 backdrop-blur-xl z-40 transform transition-all duration-500 ease-in-out ${isOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'} md:hidden`}>
-      {/* Animated background particles */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-20 left-10 w-2 h-2 bg-violet-400 rounded-full animate-pulse mobile-particle"></div>
-        <div className="absolute top-40 right-20 w-1.5 h-1.5 bg-purple-500 rounded-full animate-ping mobile-particle delay-300"></div>
-        <div className="absolute bottom-60 left-16 w-2.5 h-2.5 bg-blue-400 rounded-full animate-pulse mobile-particle delay-500"></div>
-        <div className="absolute bottom-40 right-12 w-1.5 h-1.5 bg-indigo-400 rounded-full animate-ping mobile-particle delay-700"></div>
-        <div className="absolute top-1/2 left-1/4 w-1 h-1 bg-violet-300 rounded-full animate-pulse mobile-particle delay-1000"></div>
-        <div className="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-purple-300 rounded-full animate-ping mobile-particle delay-1200"></div>
-      </div>
-      
       <div className="container mx-auto h-full flex flex-col items-center justify-center space-y-12 relative z-10">
         {/* Enhanced mobile navigation */}
         <nav className="flex flex-col items-center space-y-8">
@@ -67,15 +57,7 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onLinkClick, handleNavC
                   {link.label}
                 </span>
                 
-                {/* Active section indicator */}
-                {isActive && (
-                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2">
-                    <div className="w-3 h-3 bg-violet-400 rounded-full animate-pulse"></div>
-                    <div className="absolute inset-0 w-3 h-3 bg-violet-400 rounded-full animate-ping opacity-75"></div>
-                  </div>
-                )}
-                
-                {/* Enhanced underline for active/hover */}
+                {/* Active underline */}
                 <div className={`absolute -bottom-2 left-1/2 transform -translate-x-1/2 h-1 bg-violet-500 rounded-full transition-all duration-300 ${
                   isActive ? 'w-16 opacity-100' : 'w-0 opacity-0 group-hover:w-12 group-hover:opacity-70'
                 }`}></div>
@@ -116,16 +98,9 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onLinkClick, handleNavC
           from { transform: translateY(20px); opacity: 0; }
           to { transform: translateY(0); opacity: 1; }
         }
-        @keyframes mobileParticleFloat {
-          0%, 100% { transform: translateY(0px) scale(1); opacity: 0.6; }
-          50% { transform: translateY(-15px) scale(1.2); opacity: 1; }
-        }
         .mobile-nav-link {
-          animation: mobileMenuSlideIn 0.6s ease-out forwards;
+          animation: mobileMenuSlideIn 0.5s ease-out forwards;
           opacity: 0;
-        }
-        .mobile-particle {
-          animation: mobileParticleFloat 4s ease-in-out infinite;
         }
         .mobile-language-switcher {
           background: rgba(139, 92, 246, 0.1);

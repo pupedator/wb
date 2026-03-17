@@ -161,7 +161,7 @@ const HeroContentEditor: React.FC = () => {
               placeholder="e.g., OYUN KAFESİ"
               className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:border-violet-500 focus:ring-1 focus:ring-violet-500"
             />
-            <p className="text-xs text-gray-500">This appears with the violet-blue shimmer effect</p>
+            <p className="text-xs text-gray-500">This appears in violet below the main title</p>
           </div>
         </div>
 
@@ -334,7 +334,7 @@ const HeroContentEditor: React.FC = () => {
             <strong>Main Title:</strong> Keep it short and memorable - this is your brand name or primary identifier.
           </p>
           <p>
-            <strong>Subtitle:</strong> This text gets the beautiful violet-blue shimmer effect, perfect for taglines or descriptive phrases.
+            <strong>Subtitle:</strong> Appears in violet below the main title, perfect for taglines or descriptive phrases.
           </p>
           <p>
             <strong>Description:</strong> Write a compelling description of your gaming cafe that highlights what makes it special.

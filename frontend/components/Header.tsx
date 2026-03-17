@@ -110,14 +110,13 @@ const Header: React.FC<HeaderProps> = ({ setPage, page }) => {
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-black/90 backdrop-blur-xl border-b border-violet-900/30' : 'bg-black/30 backdrop-blur-sm'}`}>
         <div className="container mx-auto px-4 sm:px-6 py-3 flex justify-between items-center">
           {/* Enhanced Logo Section */}
-          <a href="#hero" onClick={(e) => handleNavClick(e, 'hero')} className="flex items-center space-x-2 sm:space-x-4 group logo-container">
+          <a href="#hero" onClick={(e) => handleNavClick(e, 'hero')} className="flex items-center space-x-2 sm:space-x-4 group">
             <div className="relative">
-              {/* Logo with shimmer effect */}
               <div className="absolute inset-0 rounded-full bg-violet-500 opacity-20 group-hover:opacity-40 blur transition-opacity duration-500"></div>
-              <img src={logoUrl} alt="Gaming Cafe" className="h-12 sm:h-14 lg:h-16 w-auto relative z-10 transform group-hover:scale-110 transition-transform duration-500 logo-shimmer" />
+              <img src={logoUrl} alt="Gaming Cafe" className="h-12 sm:h-14 lg:h-16 w-auto relative z-10 transform group-hover:scale-110 transition-transform duration-500" />
             </div>
             <div className="hidden sm:block">
-              <div className="text-white font-bold text-lg sm:text-xl lg:text-2xl tracking-tight group-hover:text-violet-300 transition-colors duration-300 brand-text">
+              <div className="text-white font-bold text-lg sm:text-xl lg:text-2xl tracking-tight group-hover:text-violet-300 transition-colors duration-300">
                 Gaming Cafe
               </div>
               <div className="text-violet-400 text-xs sm:text-sm font-medium tracking-wider uppercase">
@@ -139,23 +138,15 @@ const Header: React.FC<HeaderProps> = ({ setPage, page }) => {
                   key={link.id}
                   href={`#${link.id}`}
                   onClick={handleNavClick}
-                  className={`relative font-semibold px-4 py-2 rounded-full transition-all duration-300 nav-link group ${
+                  className={`relative font-semibold px-4 py-2 rounded-full transition-all duration-300 group ${
                     isActive
                       ? 'text-violet-300 bg-violet-600/20 border border-violet-400/40'
                       : 'text-neutral-300 hover:text-white hover:bg-violet-500/10'
                   }`}
                 >
-                  <span className="relative z-10 tracking-wide">{link.label}</span>
-                  
-                  {/* Active section indicator dot */}
-                  {isActive && (
-                    <div className="absolute -top-1 left-1/2 transform -translate-x-1/2">
-                      <div className="w-2 h-2 bg-violet-400 rounded-full animate-pulse"></div>
-                      <div className="absolute inset-0 w-2 h-2 bg-violet-400 rounded-full animate-ping opacity-75"></div>
-                    </div>
-                  )}
-                  
-                  {/* Enhanced active section underline */}
+                  <span className="tracking-wide">{link.label}</span>
+
+                  {/* Active underline */}
                   <div className={`absolute -bottom-1 left-1/2 transform -translate-x-1/2 h-1 bg-violet-500 rounded-full transition-all duration-300 ${
                     isActive ? 'w-12 opacity-100' : 'w-0 opacity-0 group-hover:w-8 group-hover:opacity-70'
                   }`}></div>
@@ -166,7 +157,7 @@ const Header: React.FC<HeaderProps> = ({ setPage, page }) => {
           
           {/* Enhanced Desktop Actions */}
           <div className="hidden md:flex items-center space-x-3 lg:space-x-6">
-            <div className="language-switcher-container">
+            <div>
               <LanguageSwitcher />
             </div>
             {user ? (
@@ -187,31 +178,23 @@ const Header: React.FC<HeaderProps> = ({ setPage, page }) => {
             )}
           </div>
           
-          {/* Enhanced Mobile Menu Button */}
-          <button 
-            className="md:hidden relative p-3 text-white z-50 mobile-menu-btn transition-all duration-300 hover:bg-violet-500/20 rounded-lg" 
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-3 text-white z-50 rounded-lg hover:bg-violet-500/20 transition-colors duration-200"
+            style={{ background: 'rgba(139, 92, 246, 0.1)', border: '1px solid rgba(139, 92, 246, 0.3)' }}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            <div className="absolute inset-0 bg-violet-500/10 rounded-lg opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
             {isMobileMenuOpen ? (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 relative z-10 transform rotate-0 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
             ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 relative z-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
                 </svg>
             )}
           </button>
         </div>
-        
-        {/* Navbar Shimmer Effects CSS */}
-      <style dangerouslySetInnerHTML={{__html: `
-          .mobile-menu-btn {
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-          }
-      `}} />
       </header>
       {/* The Mobile Menu component itself, which is toggled by state */}
       <MobileMenu isOpen={isMobileMenuOpen} onLinkClick={handleLinkClick} handleNavClick={handleNavClick} />
