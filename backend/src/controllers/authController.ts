@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import User from '../models/User.js';
-import OTP from '../models/OTP.js';
-import emailService from '../services/emailService.js';
+import User from '../models/User';
+import OTP from '../models/OTP';
+import emailService from '../services/emailService';
 import { 
   LoginRequest, 
   RegisterRequest, 
@@ -10,7 +10,7 @@ import {
   ResetPasswordRequest,
   AuthResponse,
   AuthRequest 
-} from '../types/index.js';
+} from '../types/index';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_development';
 const JWT_EXPIRY = process.env.JWT_EXPIRY || '24h';
@@ -111,7 +111,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       email, 
       name, 
       otp, 
-      'Your PixelCyberZone Verification Code'
+      'Your Gaming Cafe Verification Code'
     );
 
     if (!emailResult.success) {
@@ -226,7 +226,7 @@ export const resendOTP = async (req: Request, res: Response): Promise<void> => {
       email, 
       existingOTP.userData?.name || 'User', 
       newOTP, 
-      'Your New PixelCyberZone Verification Code'
+      'Your New Gaming Cafe Verification Code'
     );
 
     if (!emailResult.success) {
@@ -268,7 +268,7 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
       email, 
       user.name, 
       otp, 
-      'Your PixelCyberZone Password Reset Code'
+      'Your Gaming Cafe Password Reset Code'
     );
 
     // Remove any existing password reset OTPs for this email

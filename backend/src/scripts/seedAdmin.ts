@@ -4,7 +4,7 @@ import User from '../models/User.js';
 
 dotenv.config();
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/pixelcyberzone';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/gamingcafe';
 
 async function createAdminUser() {
   try {
@@ -13,7 +13,7 @@ async function createAdminUser() {
     console.log('Connected to MongoDB');
 
     // Check if admin already exists
-    const existingAdmin = await User.findOne({ email: 'admin@pixelcyberzone.com' });
+    const existingAdmin = await User.findOne({ email: 'admin@gamingcafe.com' });
     if (existingAdmin) {
       console.log('Admin user already exists');
       await mongoose.connection.close();
@@ -22,8 +22,8 @@ async function createAdminUser() {
 
     // Create admin user
     await User.create({
-      name: 'PixelCyberZone Admin',
-      email: 'admin@pixelcyberzone.com',
+      name: 'Admin',
+      email: 'admin@gamingcafe.com',
       password: 'admin123456', // This will be hashed automatically
       role: 'admin',
       emailVerified: true,
@@ -31,7 +31,7 @@ async function createAdminUser() {
     });
 
     console.log('Admin user created successfully:');
-    console.log('Email: admin@pixelcyberzone.com');
+    console.log('Email: admin@gamingcafe.com');
     console.log('Password: admin123456');
     console.log('Role: admin');
     

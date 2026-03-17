@@ -85,9 +85,6 @@ ehthumbs.db
 tmp/
 temp/
 
-# Production files specific to deployment
-# Keep test-server.js as it's needed for testing
-# test-server.js
 
 # SSL certificates (if any)
 *.pem

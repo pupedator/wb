@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { IPromoCode } from '../types/index.js';
+import { IPromoCode } from '../types/index';
 
 const promoCodeSchema = new Schema<IPromoCode>({
   code: {
@@ -23,9 +23,9 @@ const promoCodeSchema = new Schema<IPromoCode>({
     required: true,
     trim: true,
     validate: {
-      validator: function(v: string) {
+      validator: function(v: string): boolean {
         // Ensure caseId is not empty and follows expected format
-        return v && v.length > 0;
+        return v != null && v.length > 0;
       },
       message: 'Case ID must be provided'
     }
@@ -39,10 +39,10 @@ const promoCodeSchema = new Schema<IPromoCode>({
     type: String,
     ref: 'User',
     validate: {
-      validator: function(v: string) {
+      validator: function(v: string): boolean {
         // Only validate if status is 'used'
-        if (this.status === 'used') {
-          return v && v.length > 0;
+        if ((this as any).status === 'used') {
+          return Boolean(v && v.length > 0);
         }
         return true;
       },
@@ -52,9 +52,9 @@ const promoCodeSchema = new Schema<IPromoCode>({
   usedAt: {
     type: Date,
     validate: {
-      validator: function(v: Date) {
+      validator: function(v: Date): boolean {
         // Only validate if status is 'used'
-        if (this.status === 'used') {
+        if ((this as any).status === 'used') {
           return v != null;
         }
         return true;
@@ -74,9 +74,9 @@ const promoCodeSchema = new Schema<IPromoCode>({
       return new Date(Date.now() + 24 * 60 * 60 * 1000);
     },
     validate: {
-      validator: function(v: Date) {
+      validator: function(v: Date): boolean {
         // Expiration date must be in the future when creating
-        if (this.isNew) {
+        if ((this as any).isNew) {
           return v > new Date();
         }
         return true;
@@ -97,8 +97,7 @@ const promoCodeSchema = new Schema<IPromoCode>({
   timestamps: true
 });
 
-// Indexes for efficient queries
-promoCodeSchema.index({ code: 1 });
+// Indexes for efficient queries (code index already defined as unique in schema)
 promoCodeSchema.index({ caseId: 1, status: 1 });
 promoCodeSchema.index({ createdBy: 1 });
 promoCodeSchema.index({ expiresAt: 1 }, { sparse: true });

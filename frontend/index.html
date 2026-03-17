@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/png" href="https://i.ibb.co/6gBSVf9/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gaming Cafe - Baku's Premier Gaming Cafe</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Baku's premier 24/7 gaming cafe, offering high-end PCs with RTX 4060 GPUs, a massive library of PC & PlayStation games, and a vibrant community atmosphere. Book your spot now!" />
+    <meta name="keywords" content="gaming cafe baku, internet cafe baku, esports azerbaijan, pc gaming, playstation baku, 24/7 cafe baku, rtx 4060, 240hz monitor" />
+    <meta name="author" content="Mahmud Kamal" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Gaming Cafe - Baku's Premier Gaming Cafe" />
+    <meta property="og:description" content="Experience top-tier gaming with RTX 4060 PCs, 240Hz monitors, and a huge selection of games. Open 24/7 for all gamers." />
+    <meta property="og:image" content="https://i.ibb.co/vvDWFBfC/IMG-5803.jpg" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="Gaming Cafe - Baku's Premier Gaming Cafe" />
+    <meta property="twitter:description" content="Experience top-tier gaming with RTX 4060 PCs, 240Hz monitors, and a huge selection of games. Open 24/7 for all gamers." />
+    <meta property="twitter:image" content="https://i.ibb.co/vvDWFBfC/IMG-5803.jpg" />
+    
+    <!-- Theme Color for Mobile Browsers -->
+    <meta name="theme-color" content="#8B5CF6" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alike+Angular&family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background-color: #000;
+        background-image: url('https://i.ibb.co/vvDWFBfC/IMG-5803.jpg');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        background-repeat: no-repeat;
+      }
+      body.cabinet-bg {
+        background-image: none !important;
+        background-color: #000 !important;
+      }
+      @keyframes brief-press {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.95); }
+        100% { transform: scale(1); }
+      }
+      .animate-brief-press {
+        animation: brief-press 0.3s ease-in-out;
+      }
+      .reel-container {
+        width: 100%;
+        height: 150px;
+        background-color: #111;
+        border-radius: 8px;
+        overflow: hidden;
+        position: relative;
+        border-top: 2px solid #333;
+        border-bottom: 2px solid #333;
+        -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+        mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+      }
+      .reel-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 100%;
+        background: #a855f7;
+        z-index: 2;
+        box-shadow: 0 0 10px #a855f7, 0 0 20px #a855f7;
+      }
+      .reel {
+        display: flex;
+        height: 100%;
+      }
+      .reel-item {
+        min-width: 150px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
+        box-sizing: border-box;
+      }
+      .reel-item-image {
+        width: 80px;
+        height: 80px;
+        object-fit: contain;
+        margin-bottom: 8px;
+        filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.2));
+      }
+      .reel-item-name {
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-align: center;
+        white-space: nowrap;
+        padding: 2px 8px;
+        border-radius: 4px;
+      }
+      .otp-input {
+        width: 45px;
+        height: 55px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border-width: 2px;
+        border-style: solid;
+        border-radius: 0.5rem;
+        background-color: transparent;
+        transition: all 0.2s ease-in-out;
+        caret-color: #a855f7;
+      }
+      .otp-input:focus {
+        outline: none;
+        transform: scale(1.05);
+      }
+    </style>
+
+    <!-- Import map fixed -->
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom": "https://esm.sh/react-dom@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client"
+      }
+    }
+    </script>
+
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/index.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

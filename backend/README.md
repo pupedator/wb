@@ -1,6 +1,6 @@
-# PixelCyberZone Backend API
+# Gaming Cafe Backend API
 
-A Node.js/Express backend API for the PixelCyberZone internet cafe management system.
+A Node.js/Express backend API for the Gaming Cafe internet cafe management system.
 
 ## Prerequisites
 
@@ -93,7 +93,7 @@ Key variables:
 - OTP codes will be logged to console when email is not configured
 - MongoDB must be running for the server to start
 - TypeScript compilation is required before running in production mode
-- Default admin user: `admin@pixelcyberzone.com` / `admin123456`
+- Default admin user: `admin@gamingcafe.com` / `admin123456`
 
 ## Promo Code System
 
@@ -123,19 +123,58 @@ The API uses MongoDB with Mongoose ODM. Models include:
 - **CaseHistory** - Record of case openings (no points tracking)
 - **PromoCode** - Case-specific promotional codes for free cases
 
-## Getting Started with Admin
+## Database Management
 
-1. **Create admin user**:
-   ```bash
-   npm run seed:admin
+### Seeding Scripts
+
+```bash
+# Create admin user only
+npm run seed:admin
+
+# Seed all data (admin + sample promo codes)
+npm run seed:all
+
+# Fresh start (drop all collections and reseed)
+npm run seed:fresh
+
+# Create database indexes for performance
+npm run db:indexes
+```
+
+### Default Admin Credentials
+- **Email**: `admin@gamingcafe.com`
+- **Password**: `Admin123!@#` (configurable via `ADMIN_PASSWORD` env var)
+
+## Production Database Setup
+
+### Option 1: MongoDB Atlas (Recommended)
+1. Create account at [MongoDB Atlas](https://www.mongodb.com/atlas)
+2. Create cluster and get connection string
+3. Update `.env`:
+   ```env
+   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/gamingcafe
    ```
 
-2. **Login as admin**:
-   - Email: `admin@pixelcyberzone.com`
-   - Password: `admin123456`
+### Option 2: Local MongoDB
+```bash
+# Install (macOS)
+brew tap mongodb/brew
+brew install mongodb-community
 
-3. **Generate promo codes**:
-   ```bash
-   # Test the system
-   ./test-promo-codes.sh
-   ```
+# Start service
+brew services start mongodb/brew/mongodb-community
+```
+
+## Enhanced Features
+
+### Security & Performance
+- **Connection Pooling**: Optimized MongoDB connections
+- **Retry Logic**: Automatic reconnection with backoff
+- **Database Indexes**: Optimized for query performance
+- **Input Validation**: Comprehensive data validation
+- **Rate Limiting**: API abuse prevention
+
+### Monitoring
+- **Health Endpoints**: Server and database status
+- **Detailed Logging**: Development and production logs
+- **Error Handling**: Comprehensive error management

@@ -313,7 +313,7 @@ export const generatePromoCode = async (req: AuthRequest, res: Response): Promis
 
       res.json(response);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error('Generate promo code error:', error);
     if (error.code === 11000) {
       // Duplicate key error - try again with different code

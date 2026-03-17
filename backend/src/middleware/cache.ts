@@ -166,19 +166,10 @@ export class RateLimitCache {
     const key = CacheService.generateKey('ratelimit', identifier);
     
     try {
-      if (redisClient && redisClient.status === 'ready') {
-        const current = await redisClient.incr(key);
-        if (current === 1) {
-          await redisClient.expire(key, window);
-        }
-        return current;
-      } else {
-        // Fallback implementation for memory cache
-        const current = (await CacheService.get<number>(key)) || 0;
-        const newCount = current + 1;
-        await CacheService.set(key, newCount, window);
-        return newCount;
-      }
+      const current = (await CacheService.get<number>(key)) || 0;
+      const newCount = current + 1;
+      await CacheService.set(key, newCount, window);
+      return newCount;
     } catch (error) {
       console.error('Rate limit cache error:', error);
       return 0;

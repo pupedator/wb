@@ -140,7 +140,7 @@ export class CacheService {
         const stats = memoryCache.getStats();
         return { type: 'memory', stats };
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Cache stats error:', error);
       return { type: 'unavailable', error: error.message };
     }
@@ -148,7 +148,7 @@ export class CacheService {
 
   // Generate cache key with prefix
   static generateKey(prefix: string, ...parts: string[]): string {
-    return `pixelcyberzone:${prefix}:${parts.join(':')}`;
+    return `cache:${prefix}:${parts.join(':')}`;
   }
 }
 

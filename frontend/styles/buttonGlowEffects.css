@@ -1,0 +1,191 @@
+/* Button Effects */
+
+.glow-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border-radius: 0.75rem;
+}
+
+/* Primary violet buttons */
+.glow-btn-primary {
+  background: #7C3AED;
+  color: white;
+  font-weight: 600;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.glow-btn-primary:hover {
+  background: #6D28D9;
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* Secondary outline buttons */
+.glow-btn-secondary {
+  background: transparent;
+  color: #A855F7;
+  font-weight: 600;
+  border: 2px solid rgba(139, 92, 246, 0.5);
+}
+
+.glow-btn-secondary:hover {
+  background: rgba(139, 92, 246, 0.1);
+  color: white;
+  border-color: rgba(139, 92, 246, 0.8);
+  transform: translateY(-2px) scale(1.02);
+}
+
+/* Accent buttons */
+.glow-btn-accent {
+  background: #3B82F6;
+  color: white;
+  font-weight: 700;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.glow-btn-accent:hover {
+  background: #2563EB;
+  transform: translateY(-3px) scale(1.08);
+}
+
+/* Danger buttons */
+.glow-btn-danger {
+  background: #DC2626;
+  color: white;
+  font-weight: 600;
+  border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.glow-btn-danger:hover {
+  background: #B91C1C;
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* Success buttons */
+.glow-btn-success {
+  background: #059669;
+  color: white;
+  font-weight: 600;
+  border: 1px solid rgba(5, 150, 105, 0.3);
+}
+
+.glow-btn-success:hover {
+  background: #047857;
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* Icon effects */
+.glow-icon {
+  transition: opacity 0.3s ease;
+}
+
+.glow-icon:hover {
+  opacity: 0.8;
+}
+
+/* Card effects */
+.glow-card {
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  transition: all 0.3s ease;
+}
+
+.glow-card:hover {
+  border-color: rgba(139, 92, 246, 0.4);
+  transform: translateY(-5px);
+}
+
+/* Input effects */
+.glow-input {
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(139, 92, 246, 0.3);
+  color: white;
+  transition: border-color 0.3s ease;
+}
+
+.glow-input:focus {
+  outline: none;
+  border-color: rgba(139, 92, 246, 0.6);
+}
+
+/* Gaming-specific button variants */
+.glow-btn-gaming {
+  background: #374151;
+  color: #06B6D4;
+  font-weight: 600;
+  border: 2px solid rgba(6, 182, 212, 0.3);
+}
+
+.glow-btn-gaming:hover {
+  background: #4B5563;
+  color: white;
+  border-color: rgba(6, 182, 212, 0.6);
+  transform: translateY(-2px) scale(1.03);
+}
+
+/* PlayStation themed buttons */
+.glow-btn-playstation {
+  background: #003791;
+  color: white;
+  font-weight: 600;
+  border: 1px solid rgba(0, 112, 243, 0.4);
+}
+
+.glow-btn-playstation:hover {
+  background: #0052CC;
+  transform: translateY(-2px) scale(1.05);
+}
+
+/* Size variants */
+.glow-btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.glow-btn-md {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.glow-btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+}
+
+.glow-btn-xl {
+  padding: 1.25rem 2.5rem;
+  font-size: 1.25rem;
+}
+
+@media (max-width: 640px) {
+  .glow-btn-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .glow-btn-md {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.9rem;
+  }
+
+  .glow-btn-lg {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+  }
+
+  .glow-btn-xl {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+  }
+}
+
+/* Disabled button state */
+.glow-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.glow-btn:disabled:hover {
+  transform: none !important;
+}

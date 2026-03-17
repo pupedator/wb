@@ -20,7 +20,7 @@ class EmailService {
       service: process.env.EMAIL_SERVICE || 'gmail',
       user: process.env.EMAIL_USER || '',
       password: process.env.EMAIL_PASSWORD || '',
-      from: process.env.EMAIL_FROM || 'noreply@pixelcyberzone.com'
+      from: process.env.EMAIL_FROM || 'noreply@gamingcafe.com'
     };
 
     if (!config.user || !config.password) {
@@ -51,20 +51,20 @@ class EmailService {
 
     try {
       const mailOptions = {
-        from: process.env.EMAIL_FROM || 'noreply@pixelcyberzone.com',
+        from: process.env.EMAIL_FROM || 'noreply@gamingcafe.com',
         to: email,
         subject,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #6b46c1 0%, #9333ea 100%); padding: 30px; border-radius: 10px; text-align: center;">
-              <h1 style="color: white; margin: 0; font-size: 28px;">PixelCyberZone</h1>
+              <h1 style="color: white; margin: 0; font-size: 28px;">Gaming Cafe</h1>
             </div>
             
             <div style="background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px;">
               <h2 style="color: #1e293b; margin: 0 0 20px 0;">Hello ${name}!</h2>
               
               <p style="color: #475569; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
-                Your verification code for PixelCyberZone is:
+                Your verification code for Gaming Cafe is:
               </p>
               
               <div style="background: #6b46c1; color: white; font-size: 32px; font-weight: bold; text-align: center; padding: 20px; border-radius: 8px; letter-spacing: 4px; margin: 25px 0;">
@@ -77,7 +77,7 @@ class EmailService {
               
               <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center;">
                 <p style="color: #94a3b8; font-size: 12px; margin: 0;">
-                  © 2024 PixelCyberZone. All rights reserved.
+                  © 2024 Gaming Cafe. All rights reserved.
                 </p>
               </div>
             </div>
@@ -103,20 +103,20 @@ class EmailService {
 
     try {
       const mailOptions = {
-        from: process.env.EMAIL_FROM || 'noreply@pixelcyberzone.com',
+        from: process.env.EMAIL_FROM || 'noreply@gamingcafe.com',
         to: email,
-        subject: 'Welcome to PixelCyberZone!',
+        subject: 'Welcome to Gaming Cafe!',
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #6b46c1 0%, #9333ea 100%); padding: 30px; border-radius: 10px; text-align: center;">
-              <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to PixelCyberZone!</h1>
+              <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to Gaming Cafe!</h1>
             </div>
             
             <div style="background: #f8fafc; padding: 30px; border-radius: 0 0 10px 10px;">
               <h2 style="color: #1e293b; margin: 0 0 20px 0;">Hello ${name}!</h2>
               
               <p style="color: #475569; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
-                Thank you for joining PixelCyberZone! Your account has been successfully created.
+                Thank you for joining Gaming Cafe! Your account has been successfully created.
               </p>
               
               <p style="color: #475569; font-size: 16px; line-height: 1.6; margin-bottom: 25px;">
@@ -136,7 +136,7 @@ class EmailService {
               
               <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e2e8f0; text-align: center;">
                 <p style="color: #94a3b8; font-size: 12px; margin: 0;">
-                  © 2024 PixelCyberZone. All rights reserved.
+                  © 2024 Gaming Cafe. All rights reserved.
                 </p>
               </div>
             </div>

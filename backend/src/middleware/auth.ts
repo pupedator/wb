@@ -1,7 +1,7 @@
 import { Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { AuthRequest } from '../types/index.js';
-import User from '../models/User.js';
+import { AuthRequest } from '../types/index';
+import User from '../models/User';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_for_development';
 

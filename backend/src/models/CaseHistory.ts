@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { ICaseHistory } from '../types/index.js';
+import { ICaseHistory } from '../types/index';
 
 const caseHistorySchema = new Schema<ICaseHistory>({
   userId: {
