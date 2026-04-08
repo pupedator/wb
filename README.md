@@ -35,7 +35,7 @@ A full-stack website for a gaming cafe, built with React and Node.js.
 
 ### Install
 
-```bash
+```bashjj
 npm run install:all
 ```
 
